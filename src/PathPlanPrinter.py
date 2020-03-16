@@ -1,9 +1,10 @@
 from PIL import Image, ImageDraw, ImageColor
+import numpy as np
 import time
 
 class PathPlanPrinter():
     def __init__(self, plan=[], input_file="",
-                 output_file=""):
+                 output_file="", grid_size=[]):
         if not plan:
             raise ValueError("Provided plan is empty.")
         if type(plan[0]) is not tuple\
@@ -19,27 +20,66 @@ class PathPlanPrinter():
                             "Type of argument provided: "+\
                             str(type(output_file)))
         if output_file == "":
-            output_file = input_file.split(".")[0]+\
-                  str(time.time())+".png"
+            output_file = '../out/'+input_file.split(".")[-2].split('/')[-1]+\
+                  '_'+str(time.time())+".png"
         self.plan = plan
         self.img = Image.open(input_file)
         self.img.load()
         self.output_file = output_file
+        self.grid_size = grid_size
         self.__plan_drawn = False
 
     def draw_plan(self):
         if self.__plan_drawn:
             return
         img_d = ImageDraw.Draw(self.img)
+        if self.grid_size:
+            img = self.img.copy()
+            img = img.convert('L')
+            npdata = np.asarray(img, dtype='int32')
+            grid_color = (150, 150, 150)
+            font_size = round((self.grid_size[0]+self.grid_size[1]) // 2)
+            if font_size > min(self.grid_size):
+                font_size = int(min(self.grid_size))
+            tolerance = 12
+            offset_x = round(self.grid_size[0]/4)
+            offset_y = round(self.grid_size[1]/4)
+            for i in range(round(npdata.shape[0]/self.grid_size[0])+1):
+                liCoord = round(i * self.grid_size[0])
+                img_d.line(((0, liCoord), (self.img.size[0], liCoord)),
+                           fill=grid_color)
+                if ((self.grid_size[0] < tolerance and i%5 == 0)\
+                or self.grid_size[0] >= tolerance) and\
+                int(i * self.grid_size[0] + self.grid_size[0]//2) - 2 <npdata.shape[0]:
+                    if npdata.item(int(i * self.grid_size[0] + self.grid_size[0]//2) - 2,
+                                int(self.grid_size[1]//2) - 2) is 0:
+                        font_color = (255, 255, 255)
+                    else:
+                        font_color = (0, 0, 0)
+                    img_d.text((int(i * self.grid_size[1] + offset_x), int(offset_y)),
+                               str(i), fill=font_color)
+            for j in range(round(npdata.shape[1]/self.grid_size[1])+1):
+                colCoord = round(j * self.grid_size[1])
+                img_d.line(((colCoord, 0), (colCoord, self.img.size[1])),
+                           fill=grid_color)
+                if ((self.grid_size[1] < tolerance and j%5 == 0)\
+                or self.grid_size[1] >= tolerance) and\
+                int(self.grid_size[1]*j+self.grid_size[1]/2) - 20 < npdata.shape[1]:
+                    if npdata.item(int(self.grid_size[0]/2) - 2,
+                                int(self.grid_size[1]*j+self.grid_size[1]/2) - 20) is 0:
+                        font_color = (255, 255, 255)
+                    else:
+                        font_color = (0, 0, 0)
+                    img_d.text((offset_x, int(j * self.grid_size[0] + offset_y)),
+                               str(j), fill=font_color)
         img_d.line(self.plan, fill=(155, 0, 100), width=3)
-        '''for p in self.plan:
-            img_d.ellipse(p, fill=(255, 0, 0))'''
         del img_d
         self.__plan_draw = True
 
     def print_plan(self):
         if not self.__plan_drawn:
             self.draw_plan()
+        print("Outputting result to "+self.output_file+".")
         self.img.save(self.output_file, "PNG")
         
         
