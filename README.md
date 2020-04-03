@@ -10,13 +10,20 @@ Any issues arising as a result of using the wrong version of Python are, therefo
 * PIL or Pillow
 * Numpy
 
+## Download
+PathPlanPrinter is hosted in GitHub, so you can clone the repository as usual in Git:
+```
+git clone https://github.com/R012/PathPlanPrinter.git
+```
+As an alternative you can download a zip file with the printer as a direct download (checkout out the green button in the [PathPlanPrinter repository](https://github.com/R012/PathPlanPrinter.git)).
+
 ## Usage
 1. Insert the Python source file defining you algorithm into `/src/`. Please, be aware that your algorithm **must** use the definition of a node included in the file `/src/node.py`. For further details, please, refer to said source file and peruse the documentation included in it.
 2. Register your algorithm into the system. Import `path_planning` into your algorithm's source file, and run the function `register_search_method` included in it. Please, keep in mind that you must indicate the module it is coming from. Therefore, if you do not use an alias for `path_planning`, you will need to call the function using `path_planning.register_search_method`.
    1. This function has no return value, and will throw verbose exceptions if any problem arises.
    2. This function expects two arguments:
       1. A string, identifying the algorithm. This string will be used later on, so making it easily identified is advised.
-      2. The function implementing the algorithm. You should need provide a full function call, only its identifier. Thus, if, for example, your function is defined as `a_star(start, goal, grid, heur='naive')`, you would need to pass `a_star` as the second argument for `register_search_method`.
+      2. The function implementing the algorithm. You don't to need provide a full function call, only its identifier. Thus, if, for example, your function is defined as `a_star(start, goal, grid, heur='naive')`, you would need to pass `a_star` as the second argument for `register_search_method`.
          1. Note that, for the sake of enabling this registering function, it is mandatory that all algorithms take in a starting point, a goal and a heuristic identifier.
 3. Run `run_path_planning.py` using Python from the command line. Please, keep in mind that you must provide several named arguments for the program to run. Although they are listed in the present file, you may provide the `-h` or `--help` to the python module in order to be presented with further information.
    1. `--scenario`: Path to an image file. This image represents the map over which path planning will be executed. It can use any variation of colors, but bear in mind that black areas will be considered entirely inaccessible, and that darker colors will be considered harder to traverse than lighter ones.
