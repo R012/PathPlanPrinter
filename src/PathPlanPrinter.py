@@ -84,6 +84,9 @@ class PathPlanPrinter():
         start = self.plan[0]
         img_d.ellipse([(start[0]-5, start[1]-5),(start[0]+5, start[1]+5)], fill="red")
         img_d.text((start[0]+20, start[1]), "Start", fill="black")
+        finish = self.plan[-1]
+        img_d.ellipse([(finish[0]-5, finish[1]-5),(finish[0]+5, finish[1]+5)], fill="blue")
+        img_d.text((finish[0]+20, finish[1]), "Finish", fill="black")
         del img_d
         self.__plan_draw = True
 
