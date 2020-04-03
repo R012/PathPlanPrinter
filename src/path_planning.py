@@ -329,9 +329,12 @@ def load_image(infilename):
     img.load()
     npdata = np.asarray(img, dtype="int32")
 
-def output_image(name, path):
+def output_image(name, path, out_path=''):
     global grid_size
-    pathPrinter = printer.PathPlanPrinter(input_file=name, plan=path, grid_size=grid_size)
+    if out_path=='':
+        pathPrinter = printer.PathPlanPrinter(input_file=name, plan=path, grid_size=grid_size)
+    else:
+        pathPrinter = printer.PathPlanPrinter(input_file=name, plan=path, grid_size=grid_size, output_file=out_path)
     pathPrinter.draw_plan()
     pathPrinter.print_plan()
 

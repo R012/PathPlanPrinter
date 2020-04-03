@@ -81,6 +81,9 @@ class PathPlanPrinter():
                     img_d.text((offset_x, int(j * self.grid_size[0] + offset_y)),
                                str(j), fill=font_color)
         img_d.line(self.plan, fill=(155, 0, 100), width=3)
+        start = self.plan[0]
+        img_d.ellipse([(start[0]-5, start[1]-5),(start[0]+5, start[1]+5)], fill="red")
+        img_d.text((start[0]+20, start[1]), "Start", fill="black")
         del img_d
         self.__plan_draw = True
 
