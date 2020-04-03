@@ -5,6 +5,14 @@ import time
 class PathPlanPrinter():
     def __init__(self, plan=[], input_file="",
                  output_file="", grid_size=[]):
+        '''
+            :param plan: list representing the points in the
+            path.
+            :param input_file: path to the input map.
+            :param output_file: optional. path in which to store
+            the result.
+            :param grid_size: size of the grid.
+        '''
         if not plan:
             raise ValueError("Provided plan is empty.")
         if type(plan[0]) is not tuple\
@@ -20,7 +28,7 @@ class PathPlanPrinter():
                             "Type of argument provided: "+\
                             str(type(output_file)))
         if output_file == "":
-            output_file = '../out/'+input_file.split(".")[-2].split('/')[-1]+\
+            output_file = '../out/'+input_file.split('/')[-1].split('\\')[-1].split(".")[-2].split('/')[-1]+\
                   '_'+str(time.time())+".png"
         self.plan = plan
         self.img = Image.open(input_file)
